@@ -22,6 +22,9 @@
 
         alejandra
         nil
+
+        marksman
+        markdownlint-cli2
       ];
     };
   };
