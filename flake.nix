@@ -12,18 +12,24 @@
   outputs = {
     self,
     nixpkgs,
-    fenix,
-  }: let
+    ...
+  }@inputs: let
     system = "x86_64-linux";
-    pkgs = import nixpkgs {inherit system;};
+    pkgs = import nixpkgs {
+      inherit system;
+      overlays = [inputs.fenix.overlays.default];
+    };
   in {
     devShells."${system}".default = pkgs.mkShell {
       packages = with pkgs; [
-        rustc
-        cargo
-        rustfmt
-        rust-analyzer
-        clippy
+        (fenix.complete.withComponents [
+          "cargo"
+          "clippy"
+          "rust-src"
+          "rustc"
+          "rustfmt"
+        ])
+        rust-analyzer-nightly
 
         alejandra
         nil
@@ -34,8 +40,7 @@
     };
 
     packages.${system}.default = let
-      toolchain = fenix.packages.${system}.minimal.toolchain;
-      pkgs = nixpkgs.legacyPackages.${system};
+      toolchain = pkgs.fenix.minimal.toolchain;
     in
       (pkgs.makeRustPlatform {
         cargo = toolchain;
