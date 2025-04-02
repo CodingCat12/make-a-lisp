@@ -3,11 +3,16 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
+    fenix,
   }: let
     system = "x86_64-linux";
     pkgs = import nixpkgs {inherit system;};
@@ -27,5 +32,22 @@
         markdownlint-cli2
       ];
     };
+
+    packages.${system}.default = let
+      toolchain = fenix.packages.${system}.minimal.toolchain;
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+      (pkgs.makeRustPlatform {
+        cargo = toolchain;
+        rustc = toolchain;
+      })
+      .buildRustPackage {
+        pname = "lisp";
+        version = "0.1.0";
+
+        src = ./.;
+
+        cargoLock.lockFile = ./Cargo.lock;
+      };
   };
 }
