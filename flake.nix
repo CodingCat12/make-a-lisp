@@ -13,33 +13,13 @@
     self,
     nixpkgs,
     ...
-  }@inputs: let
+  } @ inputs: let
     system = "x86_64-linux";
     pkgs = import nixpkgs {
       inherit system;
       overlays = [inputs.fenix.overlays.default];
     };
   in {
-    devShells."${system}".default = pkgs.mkShell {
-      packages = with pkgs; [
-        (fenix.complete.withComponents [
-          "cargo"
-          "clippy"
-          "rust-src"
-          "rustc"
-          "rustfmt"
-        ])
-        rust-analyzer-nightly
-        lldb
-
-        alejandra
-        nil
-
-        marksman
-        markdownlint-cli2
-      ];
-    };
-
     packages.${system}.default = let
       toolchain = pkgs.fenix.minimal.toolchain;
     in
@@ -55,5 +35,24 @@
 
         cargoLock.lockFile = ./Cargo.lock;
       };
+
+    devShells."${system}".default = pkgs.mkShell {
+      packages = with pkgs; [
+        (fenix.complete.withComponents [
+          "cargo"
+          "clippy"
+          "rust-src"
+          "rustc"
+          "rustfmt"
+        ])
+        rust-analyzer-nightly
+        lldb
+
+        alejandra
+        nil
+      ];
+
+      nativeBuiltInputs = with pkgs; [ pkg-config xorg.libX11 alsa-lib mesa-gl-headers ];
+    };
   };
 }

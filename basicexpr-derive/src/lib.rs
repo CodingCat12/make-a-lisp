@@ -6,8 +6,8 @@ use syn::{DeriveInput, parse_macro_input};
 pub fn derive(input: TokenStream) -> TokenStream {
     let DeriveInput { ident, .. } = parse_macro_input!(input);
     let output = quote! {
-        impl Expr<#ident> for #ident {
-            fn eval(&self) -> #ident {
+        impl Expr<Self> for #ident {
+            fn eval(&self) -> Self {
                 *self
             }
         }
