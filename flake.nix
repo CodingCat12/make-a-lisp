@@ -30,6 +30,7 @@
           "rustfmt"
         ])
         rust-analyzer-nightly
+        lldb
 
         alejandra
         nil
