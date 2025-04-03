@@ -27,7 +27,7 @@ impl<T: Clone + std::fmt::Debug> Expr<T> for T {
 #[derive(Debug)]
 struct If<T: Expr<T>> {
     check: EvalTo<bool>,
-    case: Box<dyn Expr<T>>,
+    case: EvalTo<T>,
 }
 
 impl<T: Expr<T> + Copy> Expr<Option<T>> for If<T> {
