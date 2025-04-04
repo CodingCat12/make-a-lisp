@@ -51,8 +51,6 @@
         alejandra
         nil
       ];
-
-      nativeBuiltInputs = with pkgs; [ pkg-config xorg.libX11 alsa-lib mesa-gl-headers ];
     };
   };
 }
