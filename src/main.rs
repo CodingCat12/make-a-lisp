@@ -29,5 +29,5 @@ fn main() {
     };
 
     let print = PrintLine(expr.eval());
-    print.eval()
+    print.eval();
 }
