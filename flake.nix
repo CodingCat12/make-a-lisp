@@ -44,8 +44,8 @@
           "rust-src"
           "rustc"
           "rustfmt"
+          "rust-analyzer"
         ])
-        rust-analyzer-nightly
         lldb
 
         alejandra
