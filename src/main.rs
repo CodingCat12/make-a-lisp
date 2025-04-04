@@ -5,7 +5,12 @@ use rand::random;
 
 fn main() {
     let expr = Product {
-        items: &[&3.0, &2.0],
+        items: &[
+            &Sum {
+                items: &[&1.0, &1.0],
+            },
+            &4.0,
+        ],
     };
 
     let print = Print(expr.eval());
@@ -16,9 +21,8 @@ trait Expr<T: Expr<T>>: Debug {
     fn eval(&self) -> T;
 }
 
-#[allow(type_alias_bounds)]
-type EvalTo<T: Expr<T>> = Box<dyn Expr<T>>;
-type ListOf<T> = &'static [&'static dyn Expr<T>];
+type EvalTo<T> = &'static dyn Expr<T>;
+type ListOf<T> = &'static [EvalTo<T>];
 
 impl<T: Clone + Debug> Expr<T> for T {
     fn eval(&self) -> Self {
@@ -27,7 +31,7 @@ impl<T: Clone + Debug> Expr<T> for T {
 }
 
 #[derive(Debug)]
-struct If<T: Expr<T>> {
+struct If<T: Expr<T> + 'static> {
     check: EvalTo<bool>,
     case: EvalTo<T>,
 }
@@ -43,8 +47,8 @@ impl<T: Expr<T> + Copy> Expr<Option<T>> for If<T> {
 }
 
 #[derive(Debug)]
-struct IfElse<T: Expr<T>> {
-    check: Box<dyn Expr<bool>>,
+struct IfElse<T: Expr<T> + 'static> {
+    check: EvalTo<bool>,
     case_one: EvalTo<T>,
     case_two: EvalTo<T>,
 }
@@ -122,8 +126,8 @@ impl Expr<bool> for Or {
 }
 
 #[derive(Debug)]
-struct Overwrite<D: Expr<D>, T: Expr<T>> {
-    function: Box<EvalTo<D>>,
+struct Overwrite<D: Expr<D> + 'static, T: Expr<T>> {
+    function: EvalTo<D>,
     value: T,
 }
 
