@@ -1,24 +1,25 @@
+use std::fmt::Debug;
+use std::iter;
+
 use rand::random;
 
 fn main() {
-    let expr = IfElse {
-        check: Box::new(RandomBool),
-        case_one: Box::new(3),
-        case_two: Box::new(4),
+    let expr = Product {
+        items: vec![Box::new(0.5), Box::new(4.0)],
     };
 
     let print = Print(expr.eval());
     print.eval();
 }
 
-trait Expr<T: Expr<T>>: std::fmt::Debug {
+trait Expr<T: Expr<T>>: Debug {
     fn eval(&self) -> T;
 }
 
 #[allow(type_alias_bounds)]
 type EvalTo<T: Expr<T>> = Box<dyn Expr<T>>;
 
-impl<T: Clone + std::fmt::Debug> Expr<T> for T {
+impl<T: Clone + Debug> Expr<T> for T {
     fn eval(&self) -> Self {
         self.clone()
     }
@@ -76,23 +77,23 @@ impl Expr<bool> for RandomBool {
 }
 
 #[derive(Debug)]
-struct Sum {
-    items: Vec<EvalTo<i32>>,
+struct Sum<T: Expr<T> + iter::Sum> {
+    items: Vec<EvalTo<T>>,
 }
 
-impl Expr<i32> for Sum {
-    fn eval(&self) -> i32 {
+impl<T: Expr<T> + iter::Sum> Expr<T> for Sum<T> {
+    fn eval(&self) -> T {
         self.items.iter().map(|x| (*x).eval()).sum()
     }
 }
 
 #[derive(Debug)]
-struct Product {
-    items: Vec<EvalTo<i32>>,
+struct Product<T: Expr<T> + iter::Product> {
+    items: Vec<EvalTo<T>>,
 }
 
-impl Expr<i32> for Product {
-    fn eval(&self) -> i32 {
+impl<T: Expr<T> + iter::Product> Expr<T> for Product<T> {
+    fn eval(&self) -> T {
         self.items.iter().map(|x| (*x).eval()).product()
     }
 }
@@ -125,9 +126,9 @@ struct Overwrite<D: Expr<D>, T: Expr<T>> {
     value: T,
 }
 
-impl<D: Expr<D> + Copy, T: Expr<T> + Copy> Expr<T> for Overwrite<D, T> {
+impl<D: Expr<D>, T: Expr<T> + Clone> Expr<T> for Overwrite<D, T> {
     fn eval(&self) -> T {
         self.function.eval();
-        self.value
+        self.value.clone()
     }
 }
