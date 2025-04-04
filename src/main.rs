@@ -30,4 +30,11 @@ fn main() {
 
     let print = PrintLine(expr.eval());
     print.eval();
+
+    const X: &'static dyn Expr<i32> = &5;
+    let closure = move || {
+        println!();
+        Sum { items: &[&5, X] }
+    };
+    closure();
 }
