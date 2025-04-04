@@ -1,5 +1,5 @@
-mod builtins;
-mod expr;
+pub mod builtins;
+pub mod expr;
 
 use crate::expr::{Expr, Overwrite};
 
