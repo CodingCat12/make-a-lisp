@@ -5,7 +5,7 @@ use rand::random;
 
 fn main() {
     let expr = Product {
-        items: vec![Box::new(0.5), Box::new(4.0)],
+        items: &[&3.0, &2.0],
     };
 
     let print = Print(expr.eval());
@@ -18,6 +18,7 @@ trait Expr<T: Expr<T>>: Debug {
 
 #[allow(type_alias_bounds)]
 type EvalTo<T: Expr<T>> = Box<dyn Expr<T>>;
+type ListOf<T> = &'static [&'static dyn Expr<T>];
 
 impl<T: Clone + Debug> Expr<T> for T {
     fn eval(&self) -> Self {
@@ -77,8 +78,8 @@ impl Expr<bool> for RandomBool {
 }
 
 #[derive(Debug)]
-struct Sum<T: Expr<T> + iter::Sum> {
-    items: Vec<EvalTo<T>>,
+struct Sum<T: Expr<T> + iter::Sum + 'static> {
+    items: ListOf<T>,
 }
 
 impl<T: Expr<T> + iter::Sum> Expr<T> for Sum<T> {
@@ -88,8 +89,8 @@ impl<T: Expr<T> + iter::Sum> Expr<T> for Sum<T> {
 }
 
 #[derive(Debug)]
-struct Product<T: Expr<T> + iter::Product> {
-    items: Vec<EvalTo<T>>,
+struct Product<T: Expr<T> + iter::Product + 'static> {
+    items: &'static [&'static (dyn Expr<T>)], // Same here: references to trait objects
 }
 
 impl<T: Expr<T> + iter::Product> Expr<T> for Product<T> {
@@ -100,7 +101,7 @@ impl<T: Expr<T> + iter::Product> Expr<T> for Product<T> {
 
 #[derive(Debug)]
 struct And {
-    items: Vec<EvalTo<bool>>,
+    items: ListOf<bool>,
 }
 
 impl Expr<bool> for And {
@@ -111,7 +112,7 @@ impl Expr<bool> for And {
 
 #[derive(Debug)]
 struct Or {
-    items: Vec<EvalTo<bool>>,
+    items: ListOf<bool>,
 }
 
 impl Expr<bool> for Or {
