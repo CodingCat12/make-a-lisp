@@ -14,7 +14,7 @@ impl<T: Expr<T> + iter::Sum> Expr<T> for Sum<T> {
 
 #[derive(Debug)]
 pub struct Product<T: Expr<T> + iter::Product + 'static> {
-    pub items: &'static [&'static (dyn Expr<T>)],
+    pub items: ListOf<T>,
 }
 
 impl<T: Expr<T> + iter::Product> Expr<T> for Product<T> {

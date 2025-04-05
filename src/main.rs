@@ -9,32 +9,33 @@ use crate::builtins::math::{Product, Sum};
 use crate::builtins::random::RandomBool;
 
 fn main() {
-    let expr = &IfElse {
-        check: &RandomBool,
-        case_one: &Product {
-            items: &[
-                &Sum {
-                    items: &[&1.0, &1.0],
-                },
-                &4.0,
+    let expr = Box::new(IfElse {
+        check: Box::new(RandomBool),
+        case_one: Box::new(Product {
+            items: vec![
+                Box::new(Sum {
+                    items: vec![Box::new(1.0), Box::new(1.0)],
+                }),
+                Box::new(4.0),
             ],
-        },
-        case_two: &Overwrite {
-            function: &If {
-                check: &true,
-                case: &PrintLine("very useful text"),
-            },
-            value: 5.0,
-        },
-    };
+        }),
+        case_two: Box::new(Overwrite {
+            function: Box::new(If {
+                check: Box::new(true),
+                case: Box::new(PrintLine("very useful text")),
+            }),
+            value: Box::new(5.0),
+        }),
+    });
 
     let print = PrintLine(expr.eval());
     print.eval();
 
-    const X: &'static dyn Expr<i32> = &5;
-    let closure = move || {
-        println!();
-        Sum { items: &[&5, X] }
+    let let_statement = |x: i32| Sum {
+        items: vec![Box::new(x), Box::new(5)],
     };
-    closure();
+    let expr = let_statement(5);
+
+    let print = PrintLine(expr.eval());
+    print.eval();
 }
