@@ -1,12 +1,9 @@
-pub mod builtins;
-pub mod expr;
+use make_a_lisp::expr::{Expr, Overwrite};
 
-use crate::expr::{Expr, Overwrite};
-
-use crate::builtins::control_flow::{If, IfElse};
-use crate::builtins::io::PrintLine;
-use crate::builtins::math::{Product, Sum};
-use crate::builtins::random::RandomBool;
+use make_a_lisp::builtins::control_flow::{If, IfElse};
+use make_a_lisp::builtins::io::PrintLine;
+use make_a_lisp::builtins::math::{Product, Sum};
+use make_a_lisp::builtins::random::RandomBool;
 
 fn main() {
     let expr = Box::new(IfElse {
