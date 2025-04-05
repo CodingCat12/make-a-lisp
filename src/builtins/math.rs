@@ -12,6 +12,12 @@ impl<T: Expr<T> + iter::Sum> Expr<T> for Sum<T> {
     }
 }
 
+impl<T: Expr<T> + iter::Sum> Sum<T> {
+    pub fn new(items: ListOf<T>) -> Box<Self> {
+        Box::new(Self { items })
+    }
+}
+
 #[derive(Debug)]
 pub struct Product<T: Expr<T> + iter::Product + 'static> {
     pub items: ListOf<T>,
@@ -20,5 +26,11 @@ pub struct Product<T: Expr<T> + iter::Product + 'static> {
 impl<T: Expr<T> + iter::Product> Expr<T> for Product<T> {
     fn eval(&self) -> T {
         self.items.iter().map(|x| (*x).eval()).product()
+    }
+}
+
+impl<T: Expr<T> + iter::Product> Product<T> {
+    pub fn new(items: ListOf<T>) -> Box<Self> {
+        Box::new(Self { items })
     }
 }

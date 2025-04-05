@@ -9,3 +9,9 @@ impl Expr<bool> for RandomBool {
         rand::random::<bool>()
     }
 }
+
+impl RandomBool {
+    pub fn new() -> Box<Self> {
+        Box::new(Self)
+    }
+}
