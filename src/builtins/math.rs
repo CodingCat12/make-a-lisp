@@ -1,5 +1,6 @@
 use crate::expr::{Expr, ListOf};
-use std::iter;
+use num::FromPrimitive;
+use std::{iter, ops};
 
 #[derive(Debug)]
 pub struct Sum<T: Expr<T> + iter::Sum + 'static> {
@@ -30,6 +31,25 @@ impl<T: Expr<T> + iter::Product> Expr<T> for Product<T> {
 }
 
 impl<T: Expr<T> + iter::Product> Product<T> {
+    pub fn new(items: ListOf<T>) -> Box<Self> {
+        Box::new(Self { items })
+    }
+}
+
+#[derive(Debug)]
+pub struct Average<T: Expr<T> + iter::Sum> {
+    pub items: ListOf<T>,
+}
+
+impl<T: Expr<T> + iter::Sum + FromPrimitive + ops::Div<Output = T>> Expr<T> for Average<T> {
+    fn eval(&self) -> T {
+        let len = T::from_usize(self.items.len()).unwrap();
+        let total: T = self.items.iter().map(|x| (*x).eval()).sum();
+        total / len
+    }
+}
+
+impl<T: Expr<T> + iter::Sum> Average<T> {
     pub fn new(items: ListOf<T>) -> Box<Self> {
         Box::new(Self { items })
     }
