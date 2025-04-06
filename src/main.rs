@@ -3,7 +3,7 @@ use make_a_lisp::{
         io::Print,
         math::{Average, Product, Sum},
     },
-    expr::{EvalTo, Expr, ListOf},
+    expr::{EvalTo, ListOf},
 };
 
 use nom::character::complete::i32;
