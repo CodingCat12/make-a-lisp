@@ -1,26 +1,58 @@
-use make_a_lisp::expr::{Expr, Overwrite};
+use make_a_lisp::{
+    builtins::math::{Average, Product, Sum},
+    expr::{EvalTo, ListOf},
+};
+use nom::{
+    IResult,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::{digit1, multispace1},
+    combinator::map,
+    multi::separated_list0,
+    sequence::{delimited, preceded},
+};
 
-use make_a_lisp::builtins::control_flow::{If, IfElse};
-use make_a_lisp::builtins::io::PrintLine;
-use make_a_lisp::builtins::math::{Product, Sum};
-use make_a_lisp::builtins::random::RandomBool;
+fn parse_number(input: &str) -> IResult<&str, EvalTo<i32>> {
+    map(digit1, |s: &str| -> EvalTo<i32> {
+        Box::new(s.parse::<i32>().unwrap())
+    })(input)
+}
+
+fn parse_expr(input: &str) -> IResult<&str, EvalTo<i32>> {
+    alt((parse_sum, parse_product, parse_average, parse_number))(input)
+}
+
+fn parse_vector(input: &str) -> IResult<&str, ListOf<i32>> {
+    delimited(tag("("), separated_list0(multispace1, parse_expr), tag(")"))(input)
+}
+
+fn parse_sum(input: &str) -> IResult<&str, EvalTo<i32>> {
+    let (remaining, _) = preceded(tag("(+"), multispace1)(input)?;
+    let (remaining, expressions) = parse_vector(remaining)?;
+    let sum = Sum::new(expressions);
+    Ok((remaining, sum))
+}
+
+fn parse_product(input: &str) -> IResult<&str, EvalTo<i32>> {
+    let (remaining, _) = preceded(tag("(*"), multispace1)(input)?;
+    let (remaining, expressions) = parse_vector(remaining)?;
+    let product = Product::new(expressions);
+    Ok((remaining, product))
+}
+
+fn parse_average(input: &str) -> IResult<&str, EvalTo<i32>> {
+    let (remaining, _) = preceded(tag("(avg"), multispace1)(input)?;
+    let (remaining, expressions) = parse_vector(remaining)?;
+    let average = Average::new(expressions);
+    Ok((remaining, average))
+}
 
 fn main() {
-    let expr = IfElse::new(
-        RandomBool::new(),
-        Product::new(vec![
-            Sum::new(vec![Box::new(1.0), Box::new(1.0)]),
-            Box::new(4.0),
-        ]),
-        Box::new(Overwrite {
-            function: Box::new(If {
-                check: Box::new(true),
-                case: Box::new(PrintLine("very useful text")),
-            }),
-            value: Box::new(5.0),
-        }),
-    );
-
-    let print = PrintLine(expr.eval());
-    print.eval();
+    let input = "(avg (2 4))";
+    match parse_expr(input) {
+        Ok((_, result)) => {
+            println!("Parsed result: {:?}", result.eval());
+        }
+        Err(e) => eprintln!("Parsing Error: {:?}", e),
+    }
 }
