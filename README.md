@@ -2,15 +2,7 @@
 
 ## Overview
 
-**Make a Lisp** is a lightweight Lisp interpreter implemented in Rust, designed to explore the principles of language design and evaluation. This project endeavors to bring the expressive power of Lisp into the Rust ecosystem, leveraging Rust's type safety, performance, and concurrency capabilities.
-
-## Project Goals
-
-The primary goal of Make a Lisp is to create a functional and extensible Lisp-like language that:
-- Allows users to write and evaluate Lisp expressions.
-- Supports basic control flow and data manipulation constructs.
-- Encourages exploration of language design concepts, such as parsing and evaluation mechanisms.
-- Provides a foundation for further language extensions, such as macro systems or advanced data structures.
+**Make a Lisp** is a lightweight Lisp interpreter implemented in Rust, focusing on functional purity and extensibility.
 
 ## Current Status
 
@@ -19,6 +11,11 @@ As of now, Make a Lisp is in the early stages of development. The core features 
 - Logical operations using `And` and `Or` constructs.
 - Control flow through conditional constructs (`If` and `IfElse`).
 - Input and output operations using `Print` and `PrintLine`.
+- Basic parsing of `i32` and `f64` expressions. Such as:
+  ```
+  (avg (2.0 (+ (1.0 2.0))))
+  ```
+  (should return `2.5`)
 
 ## Technical Details
 
@@ -46,13 +43,31 @@ Make a Lisp is built around the concept of **expression evaluation** using Rust'
       }),
       case_two: Box::new(5.0),
   });
-```
+  ```
 
 ### Differences from Lisp
 
-Lisp is great, but it can be greater. So I want to make a language that is very much like the traditional Lisp, but not quite it.
+Lisp is great, but it can be greater. So I want to make a language that is very much like the traditional Lisp, but not quite it. These are the main differences
 
-1. **Syntax**: 
+1. **Syntax**: In Lisp, a function call is made by sequencing the function name and parameters. So to add a list of numbers, you do:
+
+  ```lisp
+  (+ 5 6 7)
+  ```
+
+  I do that too, but if it's a single parameter internally, it's a single parameter for the end-user. And since `+` sums up a list, and not a bunch of parameters (e.g.: `param1 + param2 + param3`,) the syntax in Make a Lisp would look like this:
+
+  ```
+  (+ (5 6 7))
+  ```
+
+  But functions with non-list parameters (like `-`,) still use syntax like
+
+  ```
+  (- 21 11)
+  ```
+
+2. **Everything is an expression**: In Lisp, everything is an expression. But in Make a Lisp *everything* is an expression. Even keywords like `if` and `let` are expressions
 
 ## Building
 
@@ -63,16 +78,16 @@ Lisp is great, but it can be greater. So I want to make a language that is very 
 
 ### Installation
 
-- With Cargo:
+- Using Cargo:
   ```bash
-  git clone github.com/CodingCat12/make-a-lisp.git
+  git clone https://github.com/CodingCat12/make-a-lisp.git
   cd make-a-lisp
   cargo run
   ```
 
-- With Nix:
+- Using Nix:
   ```bash
-  git clone github.com/CodingCat12/make-a-lisp.git
+  git clone https://github.com/CodingCat12/make-a-lisp.git
   cd make-a-lisp
   nix run .#lisp
   ```
