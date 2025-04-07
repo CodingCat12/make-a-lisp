@@ -19,7 +19,7 @@ fn main() {
 
         match interpreter::parse_expr(input) {
             Ok((_, result)) => {
-                println!("Result: {}", result.eval());
+                println!("Result: {:?}", result);
             }
             Err(e) => eprintln!("Parsing Error: {:?}", e),
         }
