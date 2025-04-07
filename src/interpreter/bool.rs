@@ -1,8 +1,8 @@
 use nom::{
     IResult,
     branch::alt,
-    bytes::complete::{is_not, tag},
-    character::complete::{char, multispace1},
+    bytes::complete::tag,
+    character::complete::multispace1,
     combinator::map,
     multi::separated_list0,
     sequence::{delimited, preceded},
