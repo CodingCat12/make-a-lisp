@@ -28,34 +28,34 @@ pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<f64>> {
     ))(input)
 }
 
-fn parse_float_vector(input: &str) -> IResult<&str, ListOf<f64>> {
+fn parse_list(input: &str) -> IResult<&str, ListOf<f64>> {
     delimited(tag("("), separated_list0(multispace1, parse_expr), tag(")"))(input)
 }
 
 fn parse_sum(input: &str) -> IResult<&str, EvalTo<f64>> {
     let (remaining, _) = preceded(tag("(+"), multispace1)(input)?;
-    let (remaining, expressions) = parse_float_vector(remaining)?;
+    let (remaining, expressions) = parse_list(remaining)?;
     let sum = Sum::new(expressions);
     Ok((remaining, sum))
 }
 
 fn parse_product(input: &str) -> IResult<&str, EvalTo<f64>> {
     let (remaining, _) = preceded(tag("(*"), multispace1)(input)?;
-    let (remaining, expressions) = parse_float_vector(remaining)?;
+    let (remaining, expressions) = parse_list(remaining)?;
     let product = Product::new(expressions);
     Ok((remaining, product))
 }
 
 fn parse_average(input: &str) -> IResult<&str, EvalTo<f64>> {
     let (remaining, _) = preceded(tag("(avg"), multispace1)(input)?;
-    let (remaining, expressions) = parse_float_vector(remaining)?;
+    let (remaining, expressions) = parse_list(remaining)?;
     let average = Average::new(expressions);
     Ok((remaining, average))
 }
 
 fn parse_median(input: &str) -> IResult<&str, EvalTo<f64>> {
     let (remaining, _) = preceded(tag("(med"), multispace1)(input)?;
-    let (remaining, expressions) = parse_float_vector(remaining)?;
-    let average = Median::new(expressions);
-    Ok((remaining, average))
+    let (remaining, expressions) = parse_list(remaining)?;
+    let median = Median::new(expressions);
+    Ok((remaining, median))
 }
