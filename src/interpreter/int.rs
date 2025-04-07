@@ -1,5 +1,5 @@
 use crate::{
-    builtins::math::{Average, Product, Sum},
+    builtins::math::{Average, Median, Product, Sum},
     expr::{EvalTo, ListOf},
 };
 
@@ -23,10 +23,8 @@ pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<i32>> {
         parse_sum,
         parse_product,
         parse_average,
+        parse_median,
         parse_num,
-        /*        map(parse_float_expr, |n| -> EvalTo<i32> {
-            Box::new(n.eval() as i32)
-        }),*/
     ))(input)
 }
 
@@ -52,5 +50,12 @@ fn parse_average(input: &str) -> IResult<&str, EvalTo<i32>> {
     let (remaining, _) = preceded(tag("(avg"), multispace1)(input)?;
     let (remaining, expressions) = parse_int_vector(remaining)?;
     let average = Average::new(expressions);
+    Ok((remaining, average))
+}
+
+fn parse_median(input: &str) -> IResult<&str, EvalTo<i32>> {
+    let (remaining, _) = preceded(tag("(med"), multispace1)(input)?;
+    let (remaining, expressions) = parse_int_vector(remaining)?;
+    let average = Median::new(expressions);
     Ok((remaining, average))
 }

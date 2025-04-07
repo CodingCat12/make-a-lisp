@@ -54,3 +54,22 @@ impl<T: Expr<T> + iter::Sum> Average<T> {
         Box::new(Self { items })
     }
 }
+
+#[derive(Debug)]
+pub struct Median<T> {
+    pub items: ListOf<T>,
+}
+
+impl<T: Expr<T> + PartialOrd + Clone> Expr<T> for Median<T> {
+    fn eval(&self) -> T {
+        let mut sorted: Vec<T> = self.items.iter().map(|x| (*x).eval()).collect();
+        sorted.sort_unstable_by(|x, y| x.partial_cmp(y).unwrap());
+        sorted[self.items.len() / 2].clone()
+    }
+}
+
+impl<T: Expr<T> + PartialOrd + Clone> Median<T> {
+    pub fn new(items: ListOf<T>) -> Box<Self> {
+        Box::new(Self { items })
+    }
+}
