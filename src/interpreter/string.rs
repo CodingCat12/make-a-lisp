@@ -1,8 +1,8 @@
 use nom::{
     IResult,
     branch::alt,
-    bytes::complete::tag,
-    character::complete::{alphanumeric0, char, multispace1},
+    bytes::complete::{is_not, tag},
+    character::complete::{char, multispace1},
     combinator::map,
     multi::separated_list0,
     sequence::{delimited, preceded},
@@ -19,7 +19,7 @@ pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<String>> {
 
 pub fn parse_string(input: &str) -> IResult<&str, EvalTo<String>> {
     map(
-        delimited(char('"'), alphanumeric0, char('"')),
+        delimited(char('"'), is_not("\""), char('"')),
         |s: &str| -> EvalTo<String> { Box::new(s.to_string()) },
     )(input)
 }
