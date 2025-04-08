@@ -24,6 +24,7 @@
       in {
         packages.default = pkgs.callPackage ./nix/default.nix {inherit pkgs;};
         devShells.default = pkgs.callPackage ./nix/shell.nix {inherit pkgs;};
+        formatter = "${pkgs.alejandra}/bin/alejandra}";
       };
     };
 }
