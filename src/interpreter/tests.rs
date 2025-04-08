@@ -20,6 +20,28 @@ fn basic_int() {
 }
 
 #[test]
+fn complex_int() {
+    let input = r#"
+    ( -
+      ( avg (
+        ( + 
+          ( 5 5 )
+        )
+          ( *
+          ( 2 10)
+        )
+      ))
+      5
+    )
+    "#
+    .trim_ascii();
+
+    let (_, output) = int::parse_expr(input).unwrap();
+
+    assert_eq!(output.eval(), 10)
+}
+
+#[test]
 fn basic_float() {
     let input = r#"
     ( avg (
