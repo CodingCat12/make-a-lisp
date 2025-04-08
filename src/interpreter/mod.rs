@@ -40,3 +40,20 @@ macro_rules! define_list_function {
     };
 }
 pub use define_list_function;
+
+#[macro_export]
+macro_rules! define_two_param_function {
+    ($name:ident, $op:expr, $constructor:ident, $ty:ty) => {
+        fn $name(input: &str) -> IResult<&str, EvalTo<$ty>> {
+            let (remaining, _) =
+                preceded(preceded(tag("("), multispace0), preceded($op, multispace0))(input)?;
+            let (remaining, a) = parse_expr(remaining)?;
+            let (remaining, _) = multispace0(remaining)?;
+            let (remaining, b) = parse_expr(remaining)?;
+
+            let result = $constructor::new(a, b);
+            Ok((remaining, result))
+        }
+    };
+}
+pub use define_two_param_function;

@@ -1,6 +1,9 @@
-use crate::expr::{Expr, ListOf};
+use crate::expr::{EvalTo, Expr, ListOf};
 use num::FromPrimitive;
-use std::{iter, ops};
+use std::{
+    iter,
+    ops::{self, Sub},
+};
 
 #[derive(Debug)]
 pub struct Sum<T: Expr<T> + iter::Sum + 'static> {
@@ -71,5 +74,23 @@ impl<T: Expr<T> + PartialOrd + Clone> Expr<T> for Median<T> {
 impl<T: Expr<T> + PartialOrd + Clone> Median<T> {
     pub fn new(items: ListOf<T>) -> Box<Self> {
         Box::new(Self { items })
+    }
+}
+
+#[derive(Debug)]
+pub struct Subtraction<T> {
+    a: EvalTo<T>,
+    b: EvalTo<T>,
+}
+
+impl<T: Expr<T> + Sub<Output = T>> Expr<T> for Subtraction<T> {
+    fn eval(&self) -> T {
+        self.a.eval() - self.b.eval()
+    }
+}
+
+impl<T: Expr<T> + Sub<Output = T>> Subtraction<T> {
+    pub fn new(a: EvalTo<T>, b: EvalTo<T>) -> Box<Self> {
+        Box::new(Self { a, b })
     }
 }

@@ -1,6 +1,6 @@
-use super::define_list_function;
+use super::{define_list_function, define_two_param_function};
 use crate::{
-    builtins::math::{Average, Median, Product, Sum},
+    builtins::math::{Average, Median, Product, Subtraction, Sum},
     expr::{EvalTo, ListOf},
 };
 
@@ -21,11 +21,12 @@ fn parse_int(input: &str) -> IResult<&str, EvalTo<i32>> {
 
 pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<i32>> {
     alt((
+        parse_int,
         parse_sum,
         parse_product,
         parse_average,
         parse_median,
-        parse_int,
+        parse_subtraction,
     ))(input)
 }
 
@@ -37,6 +38,7 @@ fn parse_list(input: &str) -> IResult<&str, ListOf<i32>> {
     )(input)
 }
 
+define_two_param_function!(parse_subtraction, tag("-"), Subtraction, i32);
 define_list_function!(parse_sum, tag("+"), Sum, i32);
 define_list_function!(parse_product, tag("*"), Product, i32);
 define_list_function!(parse_average, tag("avg"), Average, i32);
