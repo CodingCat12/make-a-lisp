@@ -37,3 +37,32 @@ fn basic_float() {
 
     assert_eq!(output.eval(), 15.0)
 }
+
+#[test]
+fn basic_bool() {
+    let input = r#"
+    ( && (
+      true
+      false
+      true
+    ))
+    "#
+    .trim_ascii();
+
+    let (_, output) = bool::parse_expr(input).unwrap();
+
+    assert!(!output.eval());
+
+    let input = r#"
+    ( || (
+      true
+      false
+      true
+    ))
+    "#
+    .trim_ascii();
+
+    let (_, output) = bool::parse_expr(input).unwrap();
+
+    assert!(output.eval())
+}
