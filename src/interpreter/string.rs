@@ -27,7 +27,11 @@ pub fn parse_string(input: &str) -> IResult<&str, EvalTo<String>> {
 }
 
 fn parse_list(input: &str) -> IResult<&str, ListOf<String>> {
-    delimited(tag("("), separated_list0(multispace1, parse_expr), tag(")"))(input)
+    delimited(
+        preceded(tag("("), multispace0),
+        separated_list0(multispace1, parse_expr),
+        preceded(multispace0, tag(")")),
+    )(input)
 }
 
 define_list_function!(parse_sum, tag("+"), Joined, String);

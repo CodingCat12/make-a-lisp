@@ -26,7 +26,11 @@ fn parse_bool(input: &str) -> IResult<&str, EvalTo<bool>> {
 }
 
 fn parse_list(input: &str) -> IResult<&str, ListOf<bool>> {
-    delimited(tag("("), separated_list0(multispace1, parse_expr), tag(")"))(input)
+    delimited(
+        preceded(tag("("), multispace0),
+        separated_list0(multispace1, parse_expr),
+        preceded(multispace0, tag(")")),
+    )(input)
 }
 
 define_list_function!(parse_all, tag("&&"), And, bool);
