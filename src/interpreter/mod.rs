@@ -2,6 +2,8 @@ pub mod bool;
 pub mod float;
 pub mod int;
 pub mod string;
+#[cfg(test)]
+mod tests;
 
 use nom::{IResult, branch::alt, combinator::map};
 
