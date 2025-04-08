@@ -12,45 +12,16 @@
   outputs = {
     self,
     nixpkgs,
+    fenix,
     ...
-  } @ inputs: let
+  }: let
     system = "x86_64-linux";
     pkgs = import nixpkgs {
       inherit system;
-      overlays = [inputs.fenix.overlays.default];
+      overlays = [fenix.overlays.default];
     };
   in {
-    packages.${system}.default = let
-      toolchain = pkgs.fenix.minimal.toolchain;
-    in
-      (pkgs.makeRustPlatform {
-        cargo = toolchain;
-        rustc = toolchain;
-      })
-      .buildRustPackage {
-        pname = "lisp";
-        version = "0.1.0";
-
-        src = ./.;
-
-        cargoLock.lockFile = ./Cargo.lock;
-      };
-
-    devShells."${system}".default = pkgs.mkShell {
-      packages = with pkgs; [
-        (fenix.complete.withComponents [
-          "cargo"
-          "clippy"
-          "rust-src"
-          "rustc"
-          "rustfmt"
-          "rust-analyzer"
-        ])
-        lldb
-
-        alejandra
-        nil
-      ];
-    };
+    packages.${system}.default = pkgs.callPackage ./nix/default.nix {inherit pkgs;};
+    devShells."${system}".default = pkgs.callPackage ./nix/shell.nix {inherit pkgs;};
   };
 }
