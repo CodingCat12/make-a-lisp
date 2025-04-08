@@ -1,8 +1,9 @@
+use crate::interpreter::define_list_function;
 use nom::{
     IResult,
     branch::alt,
     bytes::complete::tag,
-    character::complete::multispace1,
+    character::complete::{multispace0, multispace1},
     combinator::map,
     multi::separated_list0,
     sequence::{delimited, preceded},
@@ -28,16 +29,5 @@ fn parse_list(input: &str) -> IResult<&str, ListOf<bool>> {
     delimited(tag("("), separated_list0(multispace1, parse_expr), tag(")"))(input)
 }
 
-fn parse_all(input: &str) -> IResult<&str, EvalTo<bool>> {
-    let (remaining, _) = preceded(tag("(&&"), multispace1)(input)?;
-    let (remaining, expressions) = parse_list(remaining)?;
-    let all = And::new(expressions);
-    Ok((remaining, all))
-}
-
-fn parse_any(input: &str) -> IResult<&str, EvalTo<bool>> {
-    let (remaining, _) = preceded(tag("(||"), multispace1)(input)?;
-    let (remaining, expressions) = parse_list(remaining)?;
-    let any = Or::new(expressions);
-    Ok((remaining, any))
-}
+define_list_function!(parse_all, tag("&&"), And, bool);
+define_list_function!(parse_any, tag("||"), Or, bool);

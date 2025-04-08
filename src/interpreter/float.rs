@@ -1,3 +1,4 @@
+use super::define_list_function;
 use crate::{
     builtins::math::{Average, Median, Product, Sum},
     expr::{EvalTo, ListOf},
@@ -8,6 +9,7 @@ use nom::{
     IResult,
     branch::alt,
     bytes::complete::tag,
+    character::complete::multispace0,
     character::complete::multispace1,
     combinator::map,
     multi::separated_list0,
@@ -32,30 +34,7 @@ fn parse_list(input: &str) -> IResult<&str, ListOf<f64>> {
     delimited(tag("("), separated_list0(multispace1, parse_expr), tag(")"))(input)
 }
 
-fn parse_sum(input: &str) -> IResult<&str, EvalTo<f64>> {
-    let (remaining, _) = preceded(tag("(+"), multispace1)(input)?;
-    let (remaining, expressions) = parse_list(remaining)?;
-    let sum = Sum::new(expressions);
-    Ok((remaining, sum))
-}
-
-fn parse_product(input: &str) -> IResult<&str, EvalTo<f64>> {
-    let (remaining, _) = preceded(tag("(*"), multispace1)(input)?;
-    let (remaining, expressions) = parse_list(remaining)?;
-    let product = Product::new(expressions);
-    Ok((remaining, product))
-}
-
-fn parse_average(input: &str) -> IResult<&str, EvalTo<f64>> {
-    let (remaining, _) = preceded(tag("(avg"), multispace1)(input)?;
-    let (remaining, expressions) = parse_list(remaining)?;
-    let average = Average::new(expressions);
-    Ok((remaining, average))
-}
-
-fn parse_median(input: &str) -> IResult<&str, EvalTo<f64>> {
-    let (remaining, _) = preceded(tag("(med"), multispace1)(input)?;
-    let (remaining, expressions) = parse_list(remaining)?;
-    let median = Median::new(expressions);
-    Ok((remaining, median))
-}
+define_list_function!(parse_sum, tag("+"), Sum, f64);
+define_list_function!(parse_product, tag("*"), Product, f64);
+define_list_function!(parse_average, tag("avg"), Average, f64);
+define_list_function!(parse_median, tag("med"), Median, f64);

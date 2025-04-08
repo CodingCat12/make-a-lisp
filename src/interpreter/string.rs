@@ -1,8 +1,10 @@
+use super::define_list_function;
+use nom::character::complete::char;
 use nom::{
     IResult,
     branch::alt,
     bytes::complete::{is_not, tag},
-    character::complete::{char, multispace1},
+    character::complete::{multispace0, multispace1},
     combinator::map,
     multi::separated_list0,
     sequence::{delimited, preceded},
@@ -28,9 +30,4 @@ fn parse_list(input: &str) -> IResult<&str, ListOf<String>> {
     delimited(tag("("), separated_list0(multispace1, parse_expr), tag(")"))(input)
 }
 
-fn parse_sum(input: &str) -> IResult<&str, EvalTo<String>> {
-    let (remaining, _) = preceded(tag("(+"), multispace1)(input)?;
-    let (remaining, expressions) = parse_list(remaining)?;
-    let joined = Joined::new(expressions);
-    Ok((remaining, joined))
-}
+define_list_function!(parse_sum, tag("+"), Joined, String);
