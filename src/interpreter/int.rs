@@ -1,7 +1,7 @@
 use super::{define_list_function, define_two_param_function};
-use crate::{
+use crate::expr::{
     builtins::math::{Average, Median, Product, Subtraction, Sum},
-    expr::{EvalTo, ListOf},
+    {EvalTo, ListOf},
 };
 
 use nom::character::complete::{i32, multispace0};

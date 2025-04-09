@@ -9,9 +9,9 @@ use nom::{
     sequence::{delimited, preceded},
 };
 
-use crate::{
+use crate::expr::{
     builtins::bool::*,
-    expr::{EvalTo, ListOf},
+    {EvalTo, ListOf},
 };
 
 pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<bool>> {
