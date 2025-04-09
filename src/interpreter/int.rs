@@ -38,8 +38,8 @@ fn parse_list(input: &str) -> IResult<&str, ListOf<i32>> {
     )(input)
 }
 
-define_two_param_function!(parse_subtraction, tag("-"), Subtraction, i32);
-define_list_function!(parse_sum, tag("+"), Sum, i32);
-define_list_function!(parse_product, tag("*"), Product, i32);
-define_list_function!(parse_average, tag("avg"), Average, i32);
-define_list_function!(parse_median, tag("med"), Median, i32);
+define_two_param_function!(parse_subtraction, tag("-"), Subtraction, i32, parse_expr);
+define_list_function!(parse_sum, tag("+"), Sum, i32, parse_list);
+define_list_function!(parse_product, tag("*"), Product, i32, parse_list);
+define_list_function!(parse_average, tag("avg"), Average, i32, parse_list);
+define_list_function!(parse_median, tag("med"), Median, i32, parse_list);

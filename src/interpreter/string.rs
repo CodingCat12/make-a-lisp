@@ -34,4 +34,4 @@ fn parse_list(input: &str) -> IResult<&str, ListOf<String>> {
     )(input)
 }
 
-define_list_function!(parse_sum, tag("+"), Joined, String);
+define_list_function!(parse_sum, tag("+"), Joined, String, parse_list);

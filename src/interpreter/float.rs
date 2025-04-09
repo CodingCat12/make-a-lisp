@@ -52,7 +52,7 @@ fn parse_sum(input: &str) -> IResult<&str, EvalTo<f64>> {
     Ok((remaining, result))
 }
 
-define_two_param_function!(parse_subtraction, tag("-"), Subtraction, f64);
-define_list_function!(parse_product, tag("*"), Product, f64);
-define_list_function!(parse_average, tag("avg"), Average, f64);
-define_list_function!(parse_median, tag("med"), Median, f64);
+define_two_param_function!(parse_subtraction, tag("-"), Subtraction, f64, parse_expr);
+define_list_function!(parse_product, tag("*"), Product, f64, parse_list);
+define_list_function!(parse_average, tag("avg"), Average, f64, parse_list);
+define_list_function!(parse_median, tag("med"), Median, f64, parse_list);

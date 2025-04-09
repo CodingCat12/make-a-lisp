@@ -33,5 +33,5 @@ fn parse_list(input: &str) -> IResult<&str, ListOf<bool>> {
     )(input)
 }
 
-define_list_function!(parse_all, tag("&&"), And, bool);
-define_list_function!(parse_any, tag("||"), Or, bool);
+define_list_function!(parse_all, tag("&&"), And, bool, parse_list);
+define_list_function!(parse_any, tag("||"), Or, bool, parse_list);
