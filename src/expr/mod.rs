@@ -1,4 +1,6 @@
 pub mod builtins;
+#[cfg(test)]
+mod tests;
 
 use std::fmt::Debug;
 
