@@ -1,4 +1,5 @@
 use crate::interpreter::define_list_function;
+use nom::Parser;
 use nom::{
     IResult,
     branch::alt,
@@ -15,14 +16,15 @@ use crate::expr::{
 };
 
 pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<bool>> {
-    alt((parse_bool, parse_all, parse_any))(input)
+    alt((parse_bool, parse_all, parse_any)).parse(input)
 }
 
 fn parse_bool(input: &str) -> IResult<&str, EvalTo<bool>> {
     alt((
         map(tag("true"), |_| -> EvalTo<bool> { Box::new(true) }),
         map(tag("false"), |_| -> EvalTo<bool> { Box::new(false) }),
-    ))(input)
+    ))
+    .parse(input)
 }
 
 fn parse_list(input: &str) -> IResult<&str, ListOf<bool>> {
@@ -30,7 +32,8 @@ fn parse_list(input: &str) -> IResult<&str, ListOf<bool>> {
         preceded(tag("("), multispace0),
         separated_list0(multispace1, parse_expr),
         preceded(multispace0, tag(")")),
-    )(input)
+    )
+    .parse(input)
 }
 
 define_list_function!(parse_all, tag("&&"), And, bool, parse_list);

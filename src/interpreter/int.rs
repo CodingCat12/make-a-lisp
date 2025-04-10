@@ -3,6 +3,7 @@ use crate::expr::{
     builtins::math::{Average, Median, Product, Subtraction, Sum},
     {EvalTo, ListOf},
 };
+use nom::Parser;
 
 use nom::character::complete::{i32, multispace0};
 use nom::{
@@ -16,7 +17,7 @@ use nom::{
 };
 
 fn parse_int(input: &str) -> IResult<&str, EvalTo<i32>> {
-    map(i32, |n| -> EvalTo<i32> { Box::new(n) })(input)
+    map(i32, |n| -> EvalTo<i32> { Box::new(n) }).parse(input)
 }
 
 pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<i32>> {
@@ -27,7 +28,8 @@ pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<i32>> {
         parse_average,
         parse_median,
         parse_subtraction,
-    ))(input)
+    ))
+    .parse(input)
 }
 
 fn parse_list(input: &str) -> IResult<&str, ListOf<i32>> {
@@ -35,7 +37,8 @@ fn parse_list(input: &str) -> IResult<&str, ListOf<i32>> {
         preceded(tag("("), multispace0),
         separated_list0(multispace1, parse_expr),
         preceded(multispace0, tag(")")),
-    )(input)
+    )
+    .parse(input)
 }
 
 define_two_param_function!(parse_subtraction, tag("-"), Subtraction, i32, parse_expr);
