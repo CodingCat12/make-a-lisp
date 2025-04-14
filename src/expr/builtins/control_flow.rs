@@ -4,8 +4,8 @@ use crate::expr::Expr;
 
 #[derive(Debug)]
 pub struct If<T> {
-    pub check: Box<dyn Expr<bool>>,
-    pub case: Box<dyn Expr<T>>,
+    check: Box<dyn Expr<bool>>,
+    case: Box<dyn Expr<T>>,
 }
 
 impl<T: Debug> Expr<Option<T>> for If<T> {
@@ -15,6 +15,12 @@ impl<T: Debug> Expr<Option<T>> for If<T> {
         } else {
             Option::None
         }
+    }
+}
+
+impl<T> If<T> {
+    pub fn new(check: Box<dyn Expr<bool>>, case: Box<dyn Expr<T>>) -> Box<Self> {
+        Box::new(Self { check, case })
     }
 }
 

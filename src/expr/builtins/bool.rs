@@ -2,7 +2,7 @@ use crate::expr::Expr;
 
 #[derive(Debug)]
 pub struct And {
-    pub items: Vec<Box<dyn Expr<bool>>>,
+    items: Vec<Box<dyn Expr<bool>>>,
 }
 
 impl Expr<bool> for And {
@@ -19,7 +19,7 @@ impl And {
 
 #[derive(Debug)]
 pub struct Or {
-    pub items: Vec<Box<dyn Expr<bool>>>,
+    items: Vec<Box<dyn Expr<bool>>>,
 }
 
 impl Expr<bool> for Or {

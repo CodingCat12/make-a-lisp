@@ -8,7 +8,7 @@ use std::{
 
 #[derive(Debug)]
 pub struct Sum<T> {
-    pub items: Vec<Box<dyn Expr<T>>>,
+    items: Vec<Box<dyn Expr<T>>>,
 }
 
 impl<T: iter::Sum + Debug> Expr<T> for Sum<T> {
@@ -25,7 +25,7 @@ impl<T> Sum<T> {
 
 #[derive(Debug)]
 pub struct Product<T> {
-    pub items: Vec<Box<dyn Expr<T>>>,
+    items: Vec<Box<dyn Expr<T>>>,
 }
 
 impl<T: iter::Product + Debug> Expr<T> for Product<T> {
@@ -42,7 +42,7 @@ impl<T> Product<T> {
 
 #[derive(Debug)]
 pub struct Average<T> {
-    pub items: Vec<Box<dyn Expr<T>>>,
+    items: Vec<Box<dyn Expr<T>>>,
 }
 
 impl<T: iter::Sum + FromPrimitive + ops::Div<Output = T> + Debug> Expr<T> for Average<T> {
@@ -61,7 +61,7 @@ impl<T: iter::Sum + Debug> Average<T> {
 
 #[derive(Debug)]
 pub struct Median<T> {
-    pub items: Vec<Box<dyn Expr<T>>>,
+    items: Vec<Box<dyn Expr<T>>>,
 }
 
 impl<T: PartialOrd + Debug + Clone> Expr<T> for Median<T> {
