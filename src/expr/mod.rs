@@ -8,7 +8,7 @@ pub trait Expr<T>: Debug {
     fn eval(&self) -> T;
 }
 
-macro_rules! expr_impl {
+macro expr_impl {
     // stolen from std::ops::Add (https://doc.rust-lang.org/src/core/ops/arith.rs.html#96)
     ($($t:ty)*) => ($(
         impl Expr<Self> for $t {
