@@ -7,7 +7,7 @@ pub struct Joined {
 
 impl Expr<String> for Joined {
     fn eval(&self) -> String {
-        let evalled: Vec<String> = self.items.iter().map(|s| (*s).eval()).collect();
+        let evalled: Vec<String> = self.items.iter().map(|s| s.eval()).collect();
         evalled.join("")
     }
 }

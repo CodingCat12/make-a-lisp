@@ -7,7 +7,7 @@ pub struct And {
 
 impl Expr<bool> for And {
     fn eval(&self) -> bool {
-        self.items.iter().all(|x| (*x).eval())
+        self.items.iter().all(|x| x.eval())
     }
 }
 
@@ -24,7 +24,7 @@ pub struct Or {
 
 impl Expr<bool> for Or {
     fn eval(&self) -> bool {
-        self.items.iter().any(|x| (*x).eval())
+        self.items.iter().any(|x| x.eval())
     }
 }
 
