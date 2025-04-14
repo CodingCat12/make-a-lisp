@@ -1,8 +1,8 @@
-use crate::expr::{Expr, ListOf};
+use crate::expr::Expr;
 
 #[derive(Debug)]
 pub struct Joined {
-    items: ListOf<String>,
+    items: Vec<Box<dyn Expr<String>>>,
 }
 
 impl Expr<String> for Joined {
@@ -13,7 +13,7 @@ impl Expr<String> for Joined {
 }
 
 impl Joined {
-    pub fn new(items: ListOf<String>) -> Box<Self> {
+    pub fn new(items: Vec<Box<dyn Expr<String>>>) -> Box<Self> {
         Box::new(Self { items })
     }
 }

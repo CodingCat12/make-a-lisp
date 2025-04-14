@@ -1,7 +1,7 @@
 use super::{define_list_function, define_two_param_function};
 use crate::expr::{
+    Expr,
     builtins::math::{Average, Median, Product, Subtraction, Sum},
-    {EvalTo, ListOf},
 };
 use nom::Parser;
 
@@ -17,11 +17,11 @@ use nom::{
     sequence::{delimited, preceded},
 };
 
-fn parse_number(input: &str) -> IResult<&str, EvalTo<f64>> {
-    map(double, |n| -> EvalTo<f64> { Box::new(n) }).parse(input)
+fn parse_number(input: &str) -> IResult<&str, Box<dyn Expr<f64>>> {
+    map(double, |n| -> Box<dyn Expr<f64>> { Box::new(n) }).parse(input)
 }
 
-pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<f64>> {
+pub fn parse_expr(input: &str) -> IResult<&str, Box<dyn Expr<f64>>> {
     alt((
         parse_sum,
         parse_product,
@@ -33,7 +33,7 @@ pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<f64>> {
     .parse(input)
 }
 
-fn parse_list(input: &str) -> IResult<&str, ListOf<f64>> {
+fn parse_list(input: &str) -> IResult<&str, Vec<Box<dyn Expr<f64>>>> {
     delimited(
         preceded(tag("("), multispace0),
         separated_list0(multispace1, parse_expr),

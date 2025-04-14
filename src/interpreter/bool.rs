@@ -10,24 +10,21 @@ use nom::{
     sequence::{delimited, preceded},
 };
 
-use crate::expr::{
-    builtins::bool::*,
-    {EvalTo, ListOf},
-};
+use crate::expr::{Expr, builtins::bool::*};
 
-pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<bool>> {
+pub fn parse_expr(input: &str) -> IResult<&str, Box<dyn Expr<bool>>> {
     alt((parse_bool, parse_all, parse_any)).parse(input)
 }
 
-fn parse_bool(input: &str) -> IResult<&str, EvalTo<bool>> {
+fn parse_bool(input: &str) -> IResult<&str, Box<dyn Expr<bool>>> {
     alt((
-        map(tag("true"), |_| -> EvalTo<bool> { Box::new(true) }),
-        map(tag("false"), |_| -> EvalTo<bool> { Box::new(false) }),
+        map(tag("true"), |_| -> Box<dyn Expr<bool>> { Box::new(true) }),
+        map(tag("false"), |_| -> Box<dyn Expr<bool>> { Box::new(false) }),
     ))
     .parse(input)
 }
 
-fn parse_list(input: &str) -> IResult<&str, ListOf<bool>> {
+fn parse_list(input: &str) -> IResult<&str, Vec<Box<dyn Expr<bool>>>> {
     delimited(
         preceded(tag("("), multispace0),
         separated_list0(multispace1, parse_expr),

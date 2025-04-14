@@ -27,7 +27,7 @@ pub fn parse_expr(input: &str) -> IResult<&str, Box<dyn std::fmt::Debug>> {
 }
 
 pub macro define_list_function($name:ident, $op:expr, $constructor:ident, $ty:ty, $list_parser:ident) {
-    use crate::expr::EvalTo;
+    use crate::expr::Expr;
     use nom::character::complete::multispace0;
     use nom::{
         IResult,
@@ -35,7 +35,7 @@ pub macro define_list_function($name:ident, $op:expr, $constructor:ident, $ty:ty
         sequence::{delimited, preceded},
     };
 
-    fn $name(input: &str) -> IResult<&str, EvalTo<$ty>> {
+    fn $name(input: &str) -> IResult<&str, Box<dyn Expr<$ty>>> {
         let (remaining, expressions) = delimited(
             preceded(preceded(tag("("), multispace0), preceded($op, multispace0)),
             $list_parser,
@@ -49,11 +49,11 @@ pub macro define_list_function($name:ident, $op:expr, $constructor:ident, $ty:ty
 }
 
 pub macro define_two_param_function($name:ident, $op:expr, $constructor:ident, $ty:ty, $expr_parser:ident) {
-    use crate::expr::EvalTo;
+    use crate::expr::Expr;
     use nom::character::complete::multispace0;
     use nom::{IResult, bytes::complete::tag, sequence::preceded};
 
-    fn $name(input: &str) -> IResult<&str, EvalTo<$ty>> {
+    fn $name(input: &str) -> IResult<&str, Box<dyn Expr<$ty>>> {
         let (remaining, _) =
             preceded(preceded(tag("("), multispace0), preceded($op, multispace0)).parse(input)?;
         let (remaining, a) = $expr_parser.parse(remaining)?;

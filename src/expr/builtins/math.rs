@@ -1,4 +1,4 @@
-use crate::expr::{EvalTo, Expr, ListOf};
+use crate::expr::Expr;
 use num::FromPrimitive;
 use std::{
     iter,
@@ -7,7 +7,7 @@ use std::{
 
 #[derive(Debug)]
 pub struct Sum<T: Expr<T> + iter::Sum + 'static> {
-    pub items: ListOf<T>,
+    pub items: Vec<Box<dyn Expr<T>>>,
 }
 
 impl<T: Expr<T> + iter::Sum> Expr<T> for Sum<T> {
@@ -17,14 +17,14 @@ impl<T: Expr<T> + iter::Sum> Expr<T> for Sum<T> {
 }
 
 impl<T: Expr<T> + iter::Sum> Sum<T> {
-    pub fn new(items: ListOf<T>) -> Box<Self> {
+    pub fn new(items: Vec<Box<dyn Expr<T>>>) -> Box<Self> {
         Box::new(Self { items })
     }
 }
 
 #[derive(Debug)]
 pub struct Product<T: Expr<T> + iter::Product + 'static> {
-    pub items: ListOf<T>,
+    pub items: Vec<Box<dyn Expr<T>>>,
 }
 
 impl<T: Expr<T> + iter::Product> Expr<T> for Product<T> {
@@ -34,14 +34,14 @@ impl<T: Expr<T> + iter::Product> Expr<T> for Product<T> {
 }
 
 impl<T: Expr<T> + iter::Product> Product<T> {
-    pub fn new(items: ListOf<T>) -> Box<Self> {
+    pub fn new(items: Vec<Box<dyn Expr<T>>>) -> Box<Self> {
         Box::new(Self { items })
     }
 }
 
 #[derive(Debug)]
 pub struct Average<T: Expr<T> + iter::Sum> {
-    pub items: ListOf<T>,
+    pub items: Vec<Box<dyn Expr<T>>>,
 }
 
 impl<T: Expr<T> + iter::Sum + FromPrimitive + ops::Div<Output = T>> Expr<T> for Average<T> {
@@ -53,14 +53,14 @@ impl<T: Expr<T> + iter::Sum + FromPrimitive + ops::Div<Output = T>> Expr<T> for 
 }
 
 impl<T: Expr<T> + iter::Sum> Average<T> {
-    pub fn new(items: ListOf<T>) -> Box<Self> {
+    pub fn new(items: Vec<Box<dyn Expr<T>>>) -> Box<Self> {
         Box::new(Self { items })
     }
 }
 
 #[derive(Debug)]
 pub struct Median<T> {
-    pub items: ListOf<T>,
+    pub items: Vec<Box<dyn Expr<T>>>,
 }
 
 impl<T: Expr<T> + PartialOrd + Clone> Expr<T> for Median<T> {
@@ -72,15 +72,15 @@ impl<T: Expr<T> + PartialOrd + Clone> Expr<T> for Median<T> {
 }
 
 impl<T: Expr<T> + PartialOrd + Clone> Median<T> {
-    pub fn new(items: ListOf<T>) -> Box<Self> {
+    pub fn new(items: Vec<Box<dyn Expr<T>>>) -> Box<Self> {
         Box::new(Self { items })
     }
 }
 
 #[derive(Debug)]
 pub struct Subtraction<T> {
-    a: EvalTo<T>,
-    b: EvalTo<T>,
+    a: Box<dyn Expr<T>>,
+    b: Box<dyn Expr<T>>,
 }
 
 impl<T: Expr<T> + Sub<Output = T>> Expr<T> for Subtraction<T> {
@@ -90,7 +90,7 @@ impl<T: Expr<T> + Sub<Output = T>> Expr<T> for Subtraction<T> {
 }
 
 impl<T: Expr<T> + Sub<Output = T>> Subtraction<T> {
-    pub fn new(a: EvalTo<T>, b: EvalTo<T>) -> Box<Self> {
+    pub fn new(a: Box<dyn Expr<T>>, b: Box<dyn Expr<T>>) -> Box<Self> {
         Box::new(Self { a, b })
     }
 }

@@ -1,9 +1,9 @@
-use crate::expr::{EvalTo, Expr};
+use crate::expr::Expr;
 
 #[derive(Debug)]
 pub struct If<T: Expr<T> + 'static> {
-    pub check: EvalTo<bool>,
-    pub case: EvalTo<T>,
+    pub check: Box<dyn Expr<bool>>,
+    pub case: Box<dyn Expr<T>>,
 }
 
 impl<T: Expr<T> + Copy> Expr<Option<T>> for If<T> {
@@ -18,9 +18,9 @@ impl<T: Expr<T> + Copy> Expr<Option<T>> for If<T> {
 
 #[derive(Debug)]
 pub struct IfElse<T: Expr<T> + 'static> {
-    check: EvalTo<bool>,
-    case_one: EvalTo<T>,
-    case_two: EvalTo<T>,
+    check: Box<dyn Expr<bool>>,
+    case_one: Box<dyn Expr<T>>,
+    case_two: Box<dyn Expr<T>>,
 }
 
 impl<T: Expr<T>> Expr<T> for IfElse<T> {
@@ -34,7 +34,11 @@ impl<T: Expr<T>> Expr<T> for IfElse<T> {
 }
 
 impl<T: Expr<T>> IfElse<T> {
-    pub fn new(check: EvalTo<bool>, case_true: EvalTo<T>, case_false: EvalTo<T>) -> Box<Self> {
+    pub fn new(
+        check: Box<dyn Expr<bool>>,
+        case_true: Box<dyn Expr<T>>,
+        case_false: Box<dyn Expr<T>>,
+    ) -> Box<Self> {
         Box::new(Self {
             check,
             case_one: case_true,

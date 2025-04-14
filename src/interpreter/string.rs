@@ -11,24 +11,21 @@ use nom::{
     sequence::{delimited, preceded},
 };
 
-use crate::expr::{
-    builtins::string::Joined,
-    {EvalTo, ListOf},
-};
+use crate::expr::{Expr, builtins::string::Joined};
 
-pub fn parse_expr(input: &str) -> IResult<&str, EvalTo<String>> {
+pub fn parse_expr(input: &str) -> IResult<&str, Box<dyn Expr<String>>> {
     alt((parse_string, parse_sum)).parse(input)
 }
 
-pub fn parse_string(input: &str) -> IResult<&str, EvalTo<String>> {
+pub fn parse_string(input: &str) -> IResult<&str, Box<dyn Expr<String>>> {
     map(
         delimited(char('"'), is_not("\""), char('"')),
-        |s: &str| -> EvalTo<String> { Box::new(s.to_string()) },
+        |s: &str| -> Box<dyn Expr<String>> { Box::new(s.to_string()) },
     )
     .parse(input)
 }
 
-fn parse_list(input: &str) -> IResult<&str, ListOf<String>> {
+fn parse_list(input: &str) -> IResult<&str, Vec<Box<dyn Expr<String>>>> {
     delimited(
         preceded(tag("("), multispace0),
         separated_list0(multispace1, parse_expr),

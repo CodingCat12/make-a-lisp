@@ -1,8 +1,8 @@
-use crate::expr::{Expr, ListOf};
+use crate::expr::Expr;
 
 #[derive(Debug)]
 pub struct And {
-    pub items: ListOf<bool>,
+    pub items: Vec<Box<dyn Expr<bool>>>,
 }
 
 impl Expr<bool> for And {
@@ -12,14 +12,14 @@ impl Expr<bool> for And {
 }
 
 impl And {
-    pub fn new(items: ListOf<bool>) -> Box<Self> {
+    pub fn new(items: Vec<Box<dyn Expr<bool>>>) -> Box<Self> {
         Box::new(Self { items })
     }
 }
 
 #[derive(Debug)]
 pub struct Or {
-    pub items: ListOf<bool>,
+    pub items: Vec<Box<dyn Expr<bool>>>,
 }
 
 impl Expr<bool> for Or {
@@ -29,7 +29,7 @@ impl Expr<bool> for Or {
 }
 
 impl Or {
-    pub fn new(items: ListOf<bool>) -> Box<Self> {
+    pub fn new(items: Vec<Box<dyn Expr<bool>>>) -> Box<Self> {
         Box::new(Self { items })
     }
 }
