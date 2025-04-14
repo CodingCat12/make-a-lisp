@@ -1,10 +1,7 @@
 use crate::expr::Expr;
 use num::FromPrimitive;
-use std::{
-    fmt::Debug,
-    iter,
-    ops::{self, Sub},
-};
+use std::fmt::Debug;
+use std::{iter, ops};
 
 #[derive(Debug)]
 pub struct Sum<T> {
@@ -84,13 +81,13 @@ pub struct Subtraction<T> {
     b: Box<dyn Expr<T>>,
 }
 
-impl<T: Sub<Output = T> + Debug> Expr<T> for Subtraction<T> {
+impl<T: ops::Sub<Output = T> + Debug> Expr<T> for Subtraction<T> {
     fn eval(&self) -> T {
         self.a.eval() - self.b.eval()
     }
 }
 
-impl<T: Sub<Output = T> + Debug> Subtraction<T> {
+impl<T: ops::Sub<Output = T> + Debug> Subtraction<T> {
     pub fn new(a: Box<dyn Expr<T>>, b: Box<dyn Expr<T>>) -> Box<Self> {
         Box::new(Self { a, b })
     }
