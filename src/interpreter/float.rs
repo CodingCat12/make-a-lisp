@@ -1,7 +1,7 @@
 use super::{define_list_function, define_two_param_function};
 use crate::expr::{
     Expr,
-    builtins::math::{Average, Median, Product, Subtraction, Sum},
+    builtins::math::{Average, Median, Product, Sub, Sum},
 };
 use nom::Parser;
 
@@ -43,7 +43,7 @@ fn parse_list(input: &str) -> IResult<&str, Vec<Box<dyn Expr<f64>>>> {
 }
 
 define_list_function!(parse_sum, tag("+"), Sum, f64, parse_list);
-define_two_param_function!(parse_subtraction, tag("-"), Subtraction, f64, parse_expr);
+define_two_param_function!(parse_subtraction, tag("-"), Sub, f64, parse_expr);
 define_list_function!(parse_product, tag("*"), Product, f64, parse_list);
 define_list_function!(parse_average, tag("avg"), Average, f64, parse_list);
 define_list_function!(parse_median, tag("med"), Median, f64, parse_list);

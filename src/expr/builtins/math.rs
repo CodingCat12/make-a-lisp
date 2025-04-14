@@ -76,18 +76,18 @@ impl<T: PartialOrd + Clone> Median<T> {
 }
 
 #[derive(Debug)]
-pub struct Subtraction<T> {
+pub struct Sub<T> {
     a: Box<dyn Expr<T>>,
     b: Box<dyn Expr<T>>,
 }
 
-impl<T: ops::Sub<Output = T> + Debug> Expr<T> for Subtraction<T> {
+impl<T: ops::Sub<Output = T> + Debug> Expr<T> for Sub<T> {
     fn eval(&self) -> T {
         self.a.eval() - self.b.eval()
     }
 }
 
-impl<T: ops::Sub<Output = T> + Debug> Subtraction<T> {
+impl<T: ops::Sub<Output = T> + Debug> Sub<T> {
     pub fn new(a: Box<dyn Expr<T>>, b: Box<dyn Expr<T>>) -> Box<Self> {
         Box::new(Self { a, b })
     }
