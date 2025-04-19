@@ -1,9 +1,9 @@
 use super::{define_list_function, define_two_param_function};
 use crate::expr::{
-    Expr,
+    Expr, Variable,
     builtins::math::{Average, Median, Product, Sub, Sum},
 };
-use nom::Parser;
+use nom::{Parser, character::complete::alphanumeric1};
 
 use nom::character::complete::{i32, multispace0};
 use nom::{
@@ -28,6 +28,7 @@ pub fn parse_expr(input: &str) -> IResult<&str, Box<dyn Expr<i32>>> {
         parse_average,
         parse_median,
         parse_subtraction,
+        parse_var,
     ))
     .parse(input)
 }
@@ -39,6 +40,11 @@ fn parse_list(input: &str) -> IResult<&str, Vec<Box<dyn Expr<i32>>>> {
         preceded(multispace0, tag(")")),
     )
     .parse(input)
+}
+
+fn parse_var(input: &str) -> IResult<&str, Box<dyn Expr<i32>>> {
+    let (remaining, chars) = delimited(multispace1, alphanumeric1, multispace1).parse(input)?;
+    Ok((remaining, Variable::new(chars)))
 }
 
 define_two_param_function!(parse_subtraction, tag("-"), Sub, i32, parse_expr);

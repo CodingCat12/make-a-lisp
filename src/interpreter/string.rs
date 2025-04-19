@@ -1,6 +1,6 @@
 use super::define_list_function;
 use nom::Parser;
-use nom::character::complete::char;
+use nom::character::complete::{alphanumeric1, char};
 use nom::{
     IResult,
     branch::alt,
@@ -11,10 +11,11 @@ use nom::{
     sequence::{delimited, preceded},
 };
 
+use crate::expr::Variable;
 use crate::expr::{Expr, builtins::string::Joined};
 
 pub fn parse_expr(input: &str) -> IResult<&str, Box<dyn Expr<String>>> {
-    alt((parse_string, parse_sum)).parse(input)
+    alt((parse_string, parse_sum, parse_var)).parse(input)
 }
 
 pub fn parse_string(input: &str) -> IResult<&str, Box<dyn Expr<String>>> {
@@ -32,6 +33,11 @@ fn parse_list(input: &str) -> IResult<&str, Vec<Box<dyn Expr<String>>>> {
         preceded(multispace0, tag(")")),
     )
     .parse(input)
+}
+
+fn parse_var(input: &str) -> IResult<&str, Box<dyn Expr<String>>> {
+    let (remaining, chars) = delimited(multispace0, alphanumeric1, multispace0).parse(input)?;
+    Ok((remaining, Variable::new(chars)))
 }
 
 define_list_function!(parse_sum, tag("+"), Joined, String, parse_list);

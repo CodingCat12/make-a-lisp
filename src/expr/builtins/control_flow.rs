@@ -1,4 +1,4 @@
-use crate::expr::Expr;
+use crate::expr::{Env, Expr};
 
 pub struct If<T> {
     check: Box<dyn Expr<bool>>,
@@ -6,9 +6,9 @@ pub struct If<T> {
 }
 
 impl<T> Expr<Option<T>> for If<T> {
-    fn eval(&self) -> Option<T> {
-        if self.check.eval() {
-            Option::Some(self.case.eval())
+    fn eval(&self, env: &Env) -> Option<T> {
+        if self.check.eval(env) {
+            Option::Some(self.case.eval(env))
         } else {
             Option::None
         }
@@ -28,11 +28,11 @@ pub struct IfElse<T> {
 }
 
 impl<T> Expr<T> for IfElse<T> {
-    fn eval(&self) -> T {
-        if self.check.eval() {
-            self.case_one.eval()
+    fn eval(&self, env: &Env) -> T {
+        if self.check.eval(env) {
+            self.case_one.eval(env)
         } else {
-            self.case_two.eval()
+            self.case_two.eval(env)
         }
     }
 }

@@ -1,11 +1,11 @@
 use std::fmt::Debug;
 
-use crate::expr::Expr;
+use crate::expr::{Env, Expr};
 
 pub struct PrintLine<T>(T);
 
 impl<T: Debug> Expr<()> for PrintLine<T> {
-    fn eval(&self) {
+    fn eval(&self, _env: &Env) {
         println!("{:#?}", self.0);
     }
 }
@@ -19,7 +19,7 @@ impl<T> PrintLine<T> {
 pub struct Print<T>(T);
 
 impl<T: Debug> Expr<()> for Print<T> {
-    fn eval(&self) {
+    fn eval(&self, _env: &Env) {
         print!("{:#?}", self.0);
     }
 }

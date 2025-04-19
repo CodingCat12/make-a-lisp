@@ -1,4 +1,4 @@
-use crate::expr::Expr;
+use crate::expr::{Env, Expr};
 use num::FromPrimitive;
 use std::{iter, ops};
 
@@ -7,8 +7,8 @@ pub struct Sum<T> {
 }
 
 impl<T: iter::Sum> Expr<T> for Sum<T> {
-    fn eval(&self) -> T {
-        self.items.iter().map(|x| x.eval()).sum()
+    fn eval(&self, env: &Env) -> T {
+        self.items.iter().map(|x| x.eval(env)).sum()
     }
 }
 
@@ -23,8 +23,8 @@ pub struct Product<T> {
 }
 
 impl<T: iter::Product> Expr<T> for Product<T> {
-    fn eval(&self) -> T {
-        self.items.iter().map(|x| x.eval()).product()
+    fn eval(&self, env: &Env) -> T {
+        self.items.iter().map(|x| x.eval(env)).product()
     }
 }
 
@@ -39,9 +39,9 @@ pub struct Average<T> {
 }
 
 impl<T: iter::Sum + FromPrimitive + ops::Div<Output = T>> Expr<T> for Average<T> {
-    fn eval(&self) -> T {
+    fn eval(&self, env: &Env) -> T {
         let len = T::from_usize(self.items.len()).unwrap();
-        let total: T = self.items.iter().map(|x| x.eval()).sum();
+        let total: T = self.items.iter().map(|x| x.eval(env)).sum();
         total / len
     }
 }
@@ -57,8 +57,8 @@ pub struct Median<T> {
 }
 
 impl<T: PartialOrd + Clone> Expr<T> for Median<T> {
-    fn eval(&self) -> T {
-        let mut sorted: Vec<T> = self.items.iter().map(|x| x.eval()).collect();
+    fn eval(&self, env: &Env) -> T {
+        let mut sorted: Vec<T> = self.items.iter().map(|x| x.eval(env)).collect();
         sorted.sort_unstable_by(|x, y| x.partial_cmp(y).unwrap());
         sorted[self.items.len() / 2].clone()
     }
@@ -76,8 +76,8 @@ pub struct Sub<T> {
 }
 
 impl<T: ops::Sub<Output = T>> Expr<T> for Sub<T> {
-    fn eval(&self) -> T {
-        self.a.eval() - self.b.eval()
+    fn eval(&self, env: &Env) -> T {
+        self.a.eval(env) - self.b.eval(env)
     }
 }
 

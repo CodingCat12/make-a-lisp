@@ -16,7 +16,7 @@ fn basic_int() {
 
     let (_, output) = int::parse_expr(input).unwrap();
 
-    assert_eq!(output.eval(), 15)
+    assert_eq!(output.eval(&Env::default()), 15)
 }
 
 #[test]
@@ -38,7 +38,7 @@ fn complex_int() {
 
     let (_, output) = int::parse_expr(input).unwrap();
 
-    assert_eq!(output.eval(), 10)
+    assert_eq!(output.eval(&Env::default()), 10)
 }
 
 #[test]
@@ -57,7 +57,7 @@ fn basic_float() {
 
     let (_, output) = float::parse_expr(input).unwrap();
 
-    assert_eq!(output.eval(), 15.0)
+    assert_eq!(output.eval(&Env::default()), 15.0)
 }
 
 #[test]
@@ -73,7 +73,7 @@ fn basic_bool() {
 
     let (_, output) = bool::parse_expr(input).unwrap();
 
-    assert!(!output.eval());
+    assert!(!output.eval(&Env::default()));
 
     let input = r#"
     ( || (
@@ -86,5 +86,29 @@ fn basic_bool() {
 
     let (_, output) = bool::parse_expr(input).unwrap();
 
-    assert!(output.eval())
+    assert!(output.eval(&Env::default()))
+}
+
+#[test]
+fn string_join() {
+    let input = r#"(+ ("hello" "world"))"#;
+    let (_, output) = string::parse_expr(input).unwrap();
+
+    assert_eq!(output.eval(&Env::default()), String::from("helloworld"));
+}
+
+#[test]
+fn consts() {
+    let input = "PI";
+    let (_, output) = float::parse_expr(input).unwrap();
+
+    assert_eq!(output.eval(&Env::default()), std::f64::consts::PI);
+
+    let input = r#"(+ ( HELLO "or not?!"))"#;
+    let (_, output) = string::parse_expr(input).unwrap();
+
+    assert_eq!(
+        output.eval(&Env::default()),
+        String::from("Hello, world!or not?!")
+    )
 }

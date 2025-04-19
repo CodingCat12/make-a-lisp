@@ -1,12 +1,12 @@
-use crate::expr::Expr;
+use crate::expr::{Env, Expr};
 
 pub struct And {
     items: Vec<Box<dyn Expr<bool>>>,
 }
 
 impl Expr<bool> for And {
-    fn eval(&self) -> bool {
-        self.items.iter().all(|x| x.eval())
+    fn eval(&self, env: &Env) -> bool {
+        self.items.iter().all(|x| x.eval(env))
     }
 }
 
@@ -21,8 +21,8 @@ pub struct Or {
 }
 
 impl Expr<bool> for Or {
-    fn eval(&self) -> bool {
-        self.items.iter().any(|x| x.eval())
+    fn eval(&self, env: &Env) -> bool {
+        self.items.iter().any(|x| x.eval(env))
     }
 }
 

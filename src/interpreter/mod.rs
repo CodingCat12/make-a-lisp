@@ -5,22 +5,23 @@ pub mod string;
 #[cfg(test)]
 mod tests;
 
+use crate::expr::Env;
 use nom::Parser;
 use nom::{IResult, branch::alt, combinator::map};
 
 pub fn parse_expr(input: &str) -> IResult<&str, Box<dyn std::any::Any>> {
     alt((
         map(int::parse_expr, |o| -> Box<dyn std::any::Any> {
-            Box::new(o.eval())
+            Box::new(o.eval(&Env::default()))
         }),
         map(float::parse_expr, |o| -> Box<dyn std::any::Any> {
-            Box::new(o.eval())
+            Box::new(o.eval(&Env::default()))
         }),
         map(string::parse_expr, |o| -> Box<dyn std::any::Any> {
-            Box::new(o.eval())
+            Box::new(o.eval(&Env::default()))
         }),
         map(bool::parse_expr, |o| -> Box<dyn std::any::Any> {
-            Box::new(o.eval())
+            Box::new(o.eval(&Env::default()))
         }),
     ))
     .parse(input)
