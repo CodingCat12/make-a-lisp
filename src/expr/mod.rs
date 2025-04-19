@@ -2,9 +2,7 @@ pub mod builtins;
 #[cfg(test)]
 mod tests;
 
-use std::fmt::Debug;
-
-pub trait Expr<T>: Debug {
+pub trait Expr<T> {
     fn eval(&self) -> T;
 }
 

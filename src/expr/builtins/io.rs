@@ -2,7 +2,6 @@ use std::fmt::Debug;
 
 use crate::expr::Expr;
 
-#[derive(Debug)]
 pub struct PrintLine<T>(T);
 
 impl<T: Debug> Expr<()> for PrintLine<T> {
@@ -17,7 +16,6 @@ impl<T> PrintLine<T> {
     }
 }
 
-#[derive(Debug)]
 pub struct Print<T>(T);
 
 impl<T: Debug> Expr<()> for Print<T> {

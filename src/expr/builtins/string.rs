@@ -1,6 +1,5 @@
 use crate::expr::Expr;
 
-#[derive(Debug)]
 pub struct Joined {
     items: Vec<Box<dyn Expr<String>>>,
 }

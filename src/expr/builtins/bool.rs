@@ -1,6 +1,5 @@
 use crate::expr::Expr;
 
-#[derive(Debug)]
 pub struct And {
     items: Vec<Box<dyn Expr<bool>>>,
 }
@@ -17,7 +16,6 @@ impl And {
     }
 }
 
-#[derive(Debug)]
 pub struct Or {
     items: Vec<Box<dyn Expr<bool>>>,
 }
