@@ -9,8 +9,6 @@ use nom::Parser;
 use nom::{IResult, branch::alt, combinator::map};
 
 pub fn parse_expr(input: &str) -> IResult<&str, Box<dyn std::any::Any>> {
-    (1, 2);
-
     alt((
         map(int::parse_expr, |o| -> Box<dyn std::any::Any> {
             Box::new(o.eval())
