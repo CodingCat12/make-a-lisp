@@ -36,7 +36,7 @@ fn parse_list(input: &str) -> IResult<&str, Vec<Box<dyn Expr<bool>>>> {
 }
 
 fn parse_var(input: &str) -> IResult<&str, Box<dyn Expr<bool>>> {
-    let (remaining, chars) = delimited(multispace0, alphanumeric1, multispace0).parse(input)?;
+    let (remaining, chars) = alphanumeric1.parse(input)?;
     println!("{}", chars);
     Ok((remaining, Variable::new(chars)))
 }

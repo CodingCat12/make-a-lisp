@@ -44,7 +44,7 @@ fn parse_list(input: &str) -> IResult<&str, Vec<Box<dyn Expr<f64>>>> {
 }
 
 fn parse_var(input: &str) -> IResult<&str, Box<dyn Expr<f64>>> {
-    let (remaining, chars) = delimited(multispace0, alphanumeric1, multispace0).parse(input)?;
+    let (remaining, chars) = alphanumeric1.parse(input)?;
     Ok((remaining, Variable::new(chars)))
 }
 
