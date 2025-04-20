@@ -118,3 +118,12 @@ fn consts() {
         String::from("Hello, world!ab")
     )
 }
+
+#[test]
+fn var() {
+    let input = "( let x 5 (- 10 x) )";
+
+    let (_, output) = int::parse_expr(input).unwrap();
+
+    assert_eq!(output.eval(&Env::default()), 5)
+}

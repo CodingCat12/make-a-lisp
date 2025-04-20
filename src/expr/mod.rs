@@ -67,3 +67,27 @@ impl Variable {
         })
     }
 }
+
+pub struct Let<V, T> {
+    name: String,
+    value: Box<dyn Expr<V>>,
+    body: Box<dyn Expr<T>>,
+}
+
+impl<V, T: 'static> Let<V, T> {
+    pub fn new(name: &str, value: Box<dyn Expr<V>>, body: Box<dyn Expr<T>>) -> Box<Self> {
+        Box::new(Self {
+            name: name.to_string(),
+            value,
+            body,
+        })
+    }
+}
+
+impl<V: Expr<Box<dyn Any>> + 'static, T> Expr<T> for Let<V, T> {
+    fn eval(&self, env: &Env) -> T {
+        let mut vars = env.vars.clone();
+        vars.insert(self.name.clone(), Rc::new(self.value.eval(env)));
+        self.body.eval(&Env { vars })
+    }
+}

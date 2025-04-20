@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use super::{define_list_function, define_two_param_function};
 use crate::expr::{
     Expr, Variable,
@@ -28,6 +30,7 @@ pub fn parse_expr(input: &str) -> IResult<&str, Box<dyn Expr<i32>>> {
         parse_average,
         parse_median,
         parse_subtraction,
+        parse_let,
         parse_var,
     ))
     .parse(input)
@@ -47,6 +50,20 @@ fn parse_var(input: &str) -> IResult<&str, Box<dyn Expr<i32>>> {
     Ok((remaining, Variable::new(chars)))
 }
 
+fn parse_let(input: &str) -> IResult<&str, Box<dyn Expr<i32>>> {
+    let (remaining, _) = preceded(
+        preceded(tag("("), multispace0),
+        preceded(tag("let"), multispace0),
+    )
+    .parse(input)?;
+    let (remaining, name) = alphanumeric1.parse(remaining)?;
+    let (remaining, _) = multispace0.parse(remaining)?;
+    let (remaining, value) = parse_expr.parse(remaining)?;
+    let (remaining, _) = multispace0.parse(remaining)?;
+    let (remaining, body) = parse_expr.parse(remaining)?;
+    let result = crate::expr::Let::new(name, value, body);
+    Ok((remaining, result))
+}
 define_two_param_function!(parse_subtraction, tag("-"), Sub, i32, parse_expr);
 define_list_function!(parse_sum, tag("+"), Sum, i32, parse_list);
 define_list_function!(parse_product, tag("*"), Product, i32, parse_list);
