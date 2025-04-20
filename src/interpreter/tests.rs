@@ -104,11 +104,17 @@ fn consts() {
 
     assert_eq!(output.eval(&Env::default()), std::f64::consts::PI);
 
-    let input = r#"(+ ( HELLO "or not?!"))"#;
+    let input = r#"
+    ( + (
+    HELLO
+    "a"
+    "b"
+    ))"#
+    .trim_ascii();
     let (_, output) = string::parse_expr(input).unwrap();
 
     assert_eq!(
         output.eval(&Env::default()),
-        String::from("Hello, world!or not?!")
+        String::from("Hello, world!ab")
     )
 }
