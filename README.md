@@ -1,12 +1,16 @@
-# Make a Lisp
+# Not a Lisp
 
 ## Overview
 
-**Make a Lisp** is a lightweight Lisp interpreter implemented in Rust, focusing on functional purity and extensibility.
+**Not a Lisp**, or NLP for short, is a lightweight *not* Lisp interpreter implemented in Rust, focusing on functional purity and extensibility.
+
+### Why the name
+
+I originally called this project "A Lisp" and had Lisp-like syntax. But then I realized Lisp kinda sucks, because of dynamic typing, inconsistent syntax, and other small problems. So this is a sort of modern version of Lisp, but not actually a Lisp.
 
 ## Current Status
 
-As of now, Make a Lisp is in the early stages of development. The core features implemented thus far include:
+As of now, Not a Lisp is in the early stages of development. The core features implemented thus far include:
 - Support for basic arithmetic operations.
 - Logical operations using `And` and `Or` constructs.
 - Control flow through conditional constructs (`If` and `IfElse`).
@@ -21,13 +25,13 @@ As of now, Make a Lisp is in the early stages of development. The core features 
 
 ### Architecture
 
-Make a Lisp is built around the concept of **expression evaluation** using Rust's trait system. The core components of the interpreter are organized as follows:
+Not a Lisp is built around the concept of **expression evaluation** using Rust's trait system. The core components of the interpreter are organized as follows:
 
 1. **Expr Trait**: The `Expr<T>` trait defines the interface for all expressions and provides an `eval` method that each expression type must implement. This trait allows for polymorphic evaluation of various types of expressions.
 
    ```rust
-   pub trait Expr<T: Expr<T>>: Debug {
-       fn eval(&self) -> T;
+   pub trait Expr<T> {
+       fn eval(&self, env: &Env) -> T;
    }
    ```
 
@@ -36,12 +40,12 @@ Make a Lisp is built around the concept of **expression evaluation** using Rust'
 3. **Dynamic Evaluation**: The expressions are dynamically built using Rust's `Box` type for heap allocation, allowing for complex expressions to be formed at runtime. This provides a flexible approach to combining different expression types.
 
   ```rust
-  let expr = Box::new(IfElse {
-      check: Box::new(RandomBool),
-      case_one: Box::new(Sum {
-          items: vec![Box::new(1.0), Box::new(2.0)],
-      }),
-      case_two: Box::new(5.0),
+  let expr = IfElse::new(
+      RandomBool::new(),
+      Sum::new(
+          vec![Box::new(1.0), Box::new(2.0)],
+      ),
+      Box::new(5.0),
   });
   ```
 
@@ -67,27 +71,4 @@ Lisp is great, but it can be greater. So I want to make a language that is very 
   (- 21 11)
   ```
 
-2. **Everything is an expression**: In Lisp, everything is an expression. But in Make a Lisp *everything* is an expression. Even keywords like `if` and `let` are expressions
-
-## Building
-
-### Prerequisites
-
-- [Rust](https://www.rust-lang.org/tools/install)
-- [Nix](https://nixos.org/download/#download-nix) (optional) 
-
-### Installation
-
-- Using Cargo:
-  ```bash
-  git clone https://github.com/CodingCat12/make-a-lisp.git
-  cd make-a-lisp
-  cargo run
-  ```
-
-- Using Nix:
-  ```bash
-  git clone https://github.com/CodingCat12/make-a-lisp.git
-  cd make-a-lisp
-  nix run .#lisp
-  ```
+2. **Everything is an expression**: In Lisp, everything is an expression. But in Make a Lisp *everything* is an expression. Even keywords like `if` and `let` have the same syntax as expressions, and are treated like them internally.
